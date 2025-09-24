@@ -1,4 +1,4 @@
-from bot_module.repositories.class_base_repository import BaseRepository
+from bot.repositories.base_repo import BaseRepository
 
 class UnbanLogRepository(BaseRepository):
 

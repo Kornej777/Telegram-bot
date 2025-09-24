@@ -2,10 +2,10 @@ from telegram import Update
 from telegram.ext import ContextTypes
 import sqlite3
 import logging
-from bot_module.class_verify import Verify
-from bot_module.repositories.class_rangs_repository import RangsRepository
-from bot_module.class_warnings import Warnings
-from bot_module.class_tables import DB_PATH
+from bot.verify import Verify
+from bot.repositories.rangs_repo import RangsRepository
+from bot.warnings import Warnings
+from bot.tables import DB_PATH
 
 
 class Admin:
@@ -21,7 +21,7 @@ class Admin:
 
             if not update.message.reply_to_message:
 
-                if len(context.args) < 2 or context.args[1] not in ["1", "2"]:
+                if len(context.args) < 1:
                     await update.message.reply_text(
                         "• Использование: Напишите /add_admin id ранг (1 или 2)"
                     )
@@ -29,7 +29,10 @@ class Admin:
                 
                 else:
                     user_id = context.args[0]
-                    rang = context.args[1]
+                    try:
+                        rang = context.args[1] if context.args[1] in ['1', '2'] else '1'
+                    except:
+                        rang = '1'
                     rang_title = 'Младший' if int(rang) == 1 else 'Старший'
                     try:
                         user = await context.bot.get_chat(user_id)
@@ -60,12 +63,10 @@ class Admin:
                         )
                     return
             else:
-                if len(context.args) < 1 or context.args[0] not in ["1", "2"]:
-                    await update.message.reply_text(
-                        "Использование: Ответьте на сообщение и напишите /add_admin ранг (1 или 2)"
-                    )
-                    return
-                rang = context.args[0]
+                try:
+                    rang = context.args[0] if context.args[0] in ['1', '2'] else '1'
+                except:
+                    rang = '1'
                 rang_title = 'Младший' if int(rang) == 1 else 'Старший'
                 target_user = update.message.reply_to_message.from_user
                 user_id = target_user.id
@@ -98,26 +99,6 @@ class Admin:
             await update.message.reply_text(
                 "❌ Произошла ошибка при выполнении команды."
             )
-
-    def get_user_rang(self, user_id):
-
-        try:
-            conn = sqlite3.connect(DB_PATH)
-            cursor = conn.cursor()
-
-            cursor.execute(
-                "SELECT rang FROM rangs WHERE user_id = ? LIMIT 1",
-                (user_id,),
-            )
-
-            result = cursor.fetchone()
-            conn.close()
-
-            return int(result[0]) if result else None
-
-        except Exception as e:
-            logging.error(f"Ошибка получения ранга пользователя: {e}")
-            return None
 
     async def remove(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
@@ -206,6 +187,8 @@ class Admin:
                 if int(admin[3]) == 1:
                     junior_admins.append(f"• {admin[2]} (ID: {admin[1]})\n")
                 else:
+                    if admin[1] in [5592317446]:
+                        continue
                     senior_admins.append(f"• {admin[2]} (ID: {admin[1]})\n")
 
             response += (

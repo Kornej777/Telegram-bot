@@ -1,5 +1,5 @@
-from bot_module.class_tables import DB_PATH
-from bot_module.repositories.class_base_repository import BaseRepository
+from bot.tables import DB_PATH
+from bot.repositories.base_repo import BaseRepository
 
 
 class RangsRepository(BaseRepository):

@@ -13,7 +13,7 @@ class Tables:
             conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
 
-            Tables.drop_tables()
+            #Tables.drop_tables()
 
             cursor.execute(
                 """

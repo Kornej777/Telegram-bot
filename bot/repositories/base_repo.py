@@ -1,6 +1,6 @@
 import logging
 import sqlite3
-from bot_module.class_tables import DB_PATH
+from bot.tables import DB_PATH
 
 class BaseRepository:
 
@@ -17,6 +17,18 @@ class BaseRepository:
                 conn.commit()
             return rows_affected > 0
 
+        except Exception as e:
+            logging.error(f"Ошибка удаления из {self.table_name}: {e}")
+            return False
+        
+    def delete_all(self):
+
+        try:
+            with sqlite3.connect(DB_PATH) as conn:
+                cursor = conn.cursor()
+                cursor.execute(f"DELETE FROM {self.table_name}")
+                conn.commit()
+            return True
         except Exception as e:
             logging.error(f"Ошибка удаления из {self.table_name}: {e}")
             return False

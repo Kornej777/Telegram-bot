@@ -1,12 +1,12 @@
-from bot_module.class_verify import Verify
-from bot_module.repositories.class_chats_repository import ChatsRepository
+from bot.verify import Verify
+from bot.repositories.chats_repo import ChatsRepository
 from telegram import Update
 from telegram.ext import ContextTypes
 import sqlite3
 import logging
-from bot_module.class_warnings import Warnings
+from bot.warnings import Warnings
 import re
-from bot_module.class_tables import DB_PATH
+from bot.tables import DB_PATH
 from telegram.error import TelegramError
 
 class Chats:

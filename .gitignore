@@ -3,3 +3,6 @@
 requirements.txt
 test_code.py
 __pycache__
+.vscode
+bot_database.db
+your_database.db

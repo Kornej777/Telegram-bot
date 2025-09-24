@@ -1,12 +1,10 @@
-from bot_module.repositories.class_ban_log_repository import BanLogRepository
-from bot_module.repositories.class_unban_log_repository import UnbanLogRepository
-from bot_module.class_enum import PunishmentType
-from bot_module.class_warnings import Warnings
-from bot_module.class_verify import Verify
+from bot.repositories.ban_log_repo import BanLogRepository
+from bot.repositories.unban_log_repo import UnbanLogRepository
+from bot.punishment_type import PunishmentType
+from bot.warnings import Warnings
+from bot.verify import Verify
 from telegram import Update
 from telegram.ext import ContextTypes
-import re
-import logging
 
 class ShowBlacklist:
 
@@ -60,10 +58,10 @@ class ShowBlacklist:
         for i, info in enumerate(page_data, start=start_idx + 1):
 
             report_text += (
-                f'{i}. Пользователь {info[2]} (ID: {info[1]})\n'
-                f"   Причина: {info[3]}\n"
-                f"   Забанил: {info[4]}\n"
-                f"   Время операции: {info[5]}\n\n"
+                f' • Пользователь {info[2]} (ID: {info[1]})\n'
+                f" • Причина: {info[3]}\n"
+                f" • Забанил: {info[4]}\n"
+                f" • Время операции: {info[5]}\n\n"
             )
 
         report_text += '• Для выбора другой страницы укажите ее цифру/число первым аргументом команды.'

@@ -1,19 +1,20 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from bot_module.class_verify import Verify
-from bot_module.class_warnings import Warnings
+from bot.verify import Verify
+from bot.warnings import Warnings
 import logging
 import os
 import re
-from bot_module.class_enum import PunishmentType
-from bot_module.repositories.class_chats_repository import ChatsRepository
-from bot_module.repositories.class_ban_log_repository import BanLogRepository
-from bot_module.repositories.class_unban_log_repository import UnbanLogRepository
-from bot_module.repositories.class_junior_ban_repository import JuniorBanRepository
-from bot_module.repositories.class_junior_unban_repository import JuniorUnbanRepository
+from bot.punishment_type import PunishmentType
+from bot.repositories.chats_repo import ChatsRepository
+from bot.repositories.ban_log_repo import BanLogRepository
+from bot.repositories.unban_log_repo import UnbanLogRepository
+from bot.repositories.junior_ban_repo import JuniorBanRepository
+from bot.repositories.junior_unban_repo import JuniorUnbanRepository
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "bot_database.db")
+
 
 class Punishment:
 
@@ -120,7 +121,7 @@ class Punishment:
             )
             reason = " ".join(context.args)
 
-        if user_id == "7937929115":
+        if self.verify.is_bot(user_id):
             return await update.message.reply_text(
                 f"❌ Невозможно применить данную команду к боту!"
             )
@@ -161,7 +162,7 @@ class Punishment:
             )
 
             if action == PunishmentType.UNBAN:
-                    self.unban_repo.delete('user_id', user_id)
+                self.unban_repo.delete("user_id", user_id)
 
             if failed_chats:
                 report_text += f"\n❌ Ошибки в {len(failed_chats)} чатах."
@@ -181,7 +182,7 @@ class Punishment:
 
             if self.verify._is_has_try_pynishment(user_id, action):
 
-                if self.verify._is_already_try(admin_id):
+                if self.verify._is_already_try(admin_id, action):
                     await update.message.reply_text(
                         f"• Вы уже запросили {prefix}бан. Попросите другого администратора подтвердить его. /admins"
                     )
@@ -207,8 +208,8 @@ class Punishment:
                 )
 
                 if action == PunishmentType.UNBAN:
-                    self.unban_repo.delete('user_id', user_id)
-                
+                    self.unban_repo.delete("user_id", user_id)
+
                 jun_repo.remove_jun(user_id)
 
                 admin_user += f" ,{result[4]}"
